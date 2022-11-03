@@ -26,7 +26,7 @@ class TaskModel {
     }
 
     public function get($id){
-        $query = $this->db->prepare("SELECT * FROM games WHERE id = ?");
+        $query = $this->db->prepare("SELECT * FROM games WHERE id_juego = ?");
         $query->execute([$id]);
         $game = $query->fetch(PDO::FETCH_OBJ);
 
@@ -35,14 +35,14 @@ class TaskModel {
 
     //Elimina un juego por su id de la base de datos
     public function delete($id){
-        $query = $this->db->prepare("DELETE FROM games WHERE id = ?");
+        $query = $this->db->prepare("DELETE FROM games WHERE id_juego = ?");
         $query->execute([$id]);
     }
 
     //Inserta un juego en la base de datos
-    public function insert($title, $sinopsis, $qualification){
-        $query = $this->db->prepare("INSERT INTO games (juego_name, sinopsis, calificacion) VALUES (?, ?, ?)");
-        $query->execute([$title, $sinopsis, $qualification]);
+    public function insert($title, $sinopsis, $qualification, $id){
+        $query = $this->db->prepare("INSERT INTO games (juego_name, sinopsis, calificacion, id_brand) VALUES (?, ?, ?, ?)");
+        $query->execute(array($title, $sinopsis, $qualification, $id));
 
         return $this->db->lastInsertId();
     }
