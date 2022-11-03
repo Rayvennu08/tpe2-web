@@ -9,19 +9,41 @@ class TaskModel {
     }
 
     /**
-     * Devuelve la lista de tareas completa.
+     * Devuelve la lista de juegos completa.
      */
     public function getAllGames() {
-        // 1. abro conexión a la DB
-        // ya esta abierta por el constructor de la clase
+        
+        // Conexion con db ya abierta por el constructor de la clase
 
-        // 2. ejecuto la sentencia (2 subpasos)
+        // Ejecuto la sentencia (2 subpasos)
         $query = $this->db->prepare("SELECT * FROM games");
         $query->execute();
 
-        // 3. obtengo los resultados
+        // Obtengo los resultados
         $games = $query->fetchAll(PDO::FETCH_OBJ); // devuelve un arreglo de objetos
         
         return $games;
+    }
+
+    public function get($id){
+        $query = $this->db->prepare("SELECT * FROM games WHERE id = ?");
+        $query->execute([$id]);
+        $game = $query->fetch(PDO::FETCH_OBJ);
+
+        return $game;
+    }
+
+    //Elimina un juego por su id de la base de datos
+    public function delete($id){
+        $query = $this->db->prepare("DELETE FROM games WHERE id = ?");
+        $query->execute([$id]);
+    }
+
+    //Inserta un juego en la base de datos
+    public function insert($title, $sinopsis, $qualification){
+        $query = $this->db->prepare("INSERT INTO games (juego_name, sinopsis, calificacion) VALUES (?, ?, ?)");
+        $query->execute([$title, $sinopsis, $qualification]);
+
+        return $this->db->lastInsertId();
     }
 }

@@ -25,4 +25,39 @@ class GameApiController {
         $this->view->response($tasks);
     }
 
+    public function getGame($params = null){
+        //Obtengo el id del arreglo de params
+        $id = $params[':ID'];
+        $game = $this->model->get($id);
+
+        //Si no existe, devuelvo 404
+        if($game)
+            $this->view->response($game);
+        else
+            $this->view->response("El juego con el id=$id no existe", 404);
+    }
+
+    public function deleteGame($params = null){
+        $id = $params[':ID'];
+
+        $game = $this->model->get($id);
+        if($game){
+            $this->model->delete($id);
+            $this->view->response($game);
+        } else {
+            $this->view->response("El juego con el id=$id no existe", 404);
+        }
+    }
+
+    public function insertGame($params = null){
+        $game = $this->getData();
+
+        if(empty($game->juego_name) || empty($game->sinopsis) || empty($game->calificacion)) {
+            $this->view->response("Complete los datos", 404);
+        } else {
+            $id = $this->model->insert($game->juego_name, $game->sinopsis, $game->calificacion);
+            $game = $this->model->get($id);
+            $this->view->response($task, 201);
+        }
+    }
 }
