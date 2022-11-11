@@ -17,7 +17,7 @@ class brandsModel{
         return $brand;
     }
     
-    /*function getAllBrands(){
+    function getAllBrands(){
         //Conexion a db ya hecha por el constructor de la clase
         
         //Ejecuto la sentencia (2 subpasos)
@@ -26,7 +26,7 @@ class brandsModel{
         //Obtengo los resultados
         $brands = $query->fetchAll(PDO::FETCH_OBJ);
         return $brands;
-    }*/
+    }
 
 
     /*function updateBrand($brand, $id){
