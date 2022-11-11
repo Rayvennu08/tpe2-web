@@ -23,7 +23,11 @@ class GameModel {
         if(!empty($sort) && !empty($order)){
             $query = $this->db->prepare("SELECT * FROM games ORDER BY $sort $order");
         }else if(!empty($sort)){
-            $query = $this->db->prepare("SELECT * FROM games ORDER BY id_juego $sort");
+            if($sort == "DESC"|| $sort  == "desc" || $sort  == "ASC"|| $sort  == "asc"){            
+                $query = $this->db->prepare("SELECT * FROM games ORDER BY id_juego $sort");
+            }else{
+                $query = $this->db->prepare("SELECT * FROM games ORDER BY $sort ASC");
+            }
         }
         else{
             $query = $this->db->prepare("SELECT * FROM games");

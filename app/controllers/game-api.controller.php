@@ -55,12 +55,19 @@ class GameApiController {
             }else{
                 return $this->view->response('El parametro requerido no existe. Intente escribiendo asc o desc, o ASC o DESC.', 404);
             }
+        }else if(!empty($_GET['sort'])){
+            $games = $this->model->getAllGames($_GET['sort']);
         }
         if(!empty($games)){
             $this->view->response($games);
         }else{
-            $this->view->response('No existe el juego.', 404);
+            $games = $this->model->getAllGames();
+        if(empty($games)){
+            $this->view->response('bla',404);
+        }else{
+            $this->view->response($games);
         }
+}
     }
 
 
