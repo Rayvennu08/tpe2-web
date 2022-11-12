@@ -10,7 +10,6 @@ $router->addRoute('games', 'GET', 'GameApiController', 'getGames');
 $router->addRoute('game/:ID', 'GET', 'GameApiController', 'getGame');
 $router->addRoute('game/:ID', 'DELETE', 'GameApiController', 'deleteGame'); 
 $router->addRoute('game', 'POST', 'GameApiController', 'insertGame'); 
-$router->addRoute('filter/game', 'GET', 'GameApiController', 'filterByBrand');
 
 
 // ejecuta la ruta (sea cual sea)

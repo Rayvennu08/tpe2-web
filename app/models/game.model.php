@@ -11,12 +11,9 @@ class GameModel {
     /**
      * Devuelve la lista de juegos completa.
      */
-    public function getAllGames($sort = null, $order = null, $page = null, $limit = null) {
+    public function getAllGames($sort = null, $order = null) {
 
         // Conexion con db ya abierta por el constructor de la clase
-
-
-        // $query = $this->db->prepare("SELECT * FROM games ORDER BY $sort $order LIMIT $page, $limit "); PARA PAGINADO
 
             
         /*Orden ASCENDENTE y DESCENDENTE por una columna de la tabla games*/
@@ -42,7 +39,11 @@ class GameModel {
     }
 
     function valueSort($sort=null){  
-        //Selecciono información de TODAS las columnas de la tabla 'games' dependiendo de su nombre 
+        /*
+            Selecciono información de TODAS las columnas de la tabla 'games', para luego dividir
+            dicha información individualmente dependiendo del nombre de columna
+            que se asigne mediante la url de Postman.
+        */ 
         $sentencia = $this->db->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = ? AND TABLE_NAME = 'games'");
         $sentencia->execute(array($sort));
         $columna = $sentencia->fetchAll(PDO::FETCH_OBJ);
@@ -50,18 +51,7 @@ class GameModel {
         return count($columna);
     }
 
-    function paginacion(){
-        $sentencia = $this->db->prepare("SELECT games.id_juego, games.juego_name, games.sinopsis, games.calificacion, brands.brand_name 
-        FROM games JOIN brands ON games.id_brand = brands.id_brand");
-        $sentencia->execute();
-        //Cuenta cuantos libros hay en la bd
-        $totalGames = $sentencia->rowCount();
-        $paginas = $totalGames/games_x_pagina;
-        $paginas = ceil($paginas);
-
-        return $paginas;
-    }
-
+    //Selecciona y muestra un juego por su ID de la base de datos
     public function get($id){
         $query = $this->db->prepare("SELECT * FROM games WHERE id_juego = ?");
         $query->execute([$id]);
@@ -70,7 +60,7 @@ class GameModel {
         return $game;
     }
 
-    //Elimina un juego por su id de la base de datos
+    //Elimina un juego por su ID de la base de datos
     public function delete($id){
         $query = $this->db->prepare("DELETE FROM games WHERE id_juego = ?");
         $query->execute([$id]);
@@ -84,9 +74,14 @@ class GameModel {
         return $this->db->lastInsertId();
     }
 
-    function filter($tabla, $name) {
-        $query = $this->db->prepare("SELECT games.id_juego, games.juego_name, games.sinopsis, games.calificacion, games.id_brand, brands.brand_name 
-        FROM games JOIN brands ON games.id_brand = brands.id_brand WHERE $tabla LIKE ?"); //ej: SELECT * FROM games WHERE id_juego = ? 
+    function filter($tabla, $name, $order) {
+        if($order != null){
+            $query = $this->db->prepare("SELECT games.id_juego, games.juego_name, games.sinopsis, games.calificacion, games.id_brand, brands.brand_name 
+        FROM games JOIN brands ON games.id_brand = brands.id_brand WHERE $tabla LIKE ? ORDER BY id_juego $order");
+        }else{
+            $query = $this->db->prepare("SELECT games.id_juego, games.juego_name, games.sinopsis, games.calificacion, games.id_brand, brands.brand_name 
+            FROM games JOIN brands ON games.id_brand = brands.id_brand WHERE $tabla LIKE ?");
+        }
         $query->execute(["%$name%"]);
         $object = $query->fetchAll(PDO::FETCH_OBJ);
 
