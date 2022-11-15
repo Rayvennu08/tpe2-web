@@ -25,6 +25,12 @@ class GameApiController {
     }
 
     public function getGames() {
+        if(!empty($_GET['order'])){
+            if($_GET['order'] == "DESC"|| $_GET['order']  == "desc" || $_GET['order']  == "ASC"|| $_GET['order']  == "asc"){
+            }else{
+                return $this->view->response("Puede que el parametro order este mal escrito, escribir DESC o desc, ASC o asc",403);
+            }
+        }
         if(!empty($games)){
             $games = $this->model->getAllGames();
             return $games;
@@ -44,17 +50,26 @@ class GameApiController {
             $this->orderSort();
         }else if(!empty($_GET['sort'])){
             $this->orderSort();
+        }else if(isset($_GET['start']) && !empty($_GET['start']) && isset($_GET['products']) && !empty($_GET['products'])){
+            $start = $_GET['start'];
+            $products = $_GET['products'];
+            /*$start controla el numero de pagina que se muestra y $products muestra la cantidad de juegos*/
+            
+            $productsDB = $this->model->getPagination($start, $products);
+            var_dump($productsDB == null);
+            $this->view->response($productsDB);
         }else{
-            $games = $this->model->getAllGames();
-            if(empty($games) || !$games){
-                $this->view->response('URL ingresada incorrecta.', 404);
-            }else{
-                $this->view->response($games);
+                $games = $this->model->getAllGames();
+                if(empty($games) || !$games){
+                    $this->view->response('URL ingresada incorrecta.', 404);
+                }else{
+                    $this->view->response($games);
+                }
             }
-        }
     }
-
-
+    /*else if(!($_GET['filtro']) && !($_GET['sort']) && !($_GET['order'])){
+        $this->view->response('URL ingresada incorrecta.', 404);
+    }*/
 
 
     public function getGame($params = null){
@@ -179,6 +194,49 @@ class GameApiController {
             $this->view->response($games);
         }else{
             $this->view->response($games);
+        }
+    }
+
+    /*
+     * Funcion que permite la paginacion de los datos, pasando por parametro, desde que registro comenzar y la cantidad de registros.  
+    */
+    public function getPaginationForCountProducts($start, $products){
+        $games = $this->model->getAllGames();
+        if(isset($_GET['start']) && !empty($_GET['start']) && isset($_GET['products']) && !empty($_GET['products'])){
+            if ((count($games) <= $start || $start < 0)) {
+                $this->view->response("Error: ha ingresado un inicio superior al numero de registros o un valor de inicio negativo", 404);
+            } else {
+                $games = $this->model->getPagination($start, $products);
+                $this->view->response($games);
+            }
+        }
+    }
+
+    /*
+     * Funcion que permite la paginacion de los datos, pasando por parametro, la pagina y la cantidad de registros.  
+     */
+    public function getPaginationForPage($page, $products){
+        if(isset($_GET['start']) && !empty($_GET['start']) && isset($_GET['products']) && !empty($_GET['products'])){
+            if ($page > 0 && $products > 0) {
+                $games = $this->model->getAllGames();
+                $countGames = count($games);
+                $pages = $countGames / $products;
+                $start = $page * $products;
+                if ($pages >= $page) {
+                    $result = array();
+                    for ($i = $start - $products; $i < $start; $i++) {
+                        array_push($result, $games[$i]);
+                    }
+                    $this->view->response($result);
+                } else {
+                    $this->view->response("Error: la cantidad de paginas o registros no cumplen con el requerimiento solicitado", 404);
+                }
+            }
+            else if($this->model->getPagination($start, $products)){
+
+            } else {
+                $this->view->response("Error: la cantidad de paginas o registros debe ser mayor o igual a 1", 404);
+            }
         }
     }
 }

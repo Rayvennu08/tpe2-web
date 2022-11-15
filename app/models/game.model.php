@@ -42,7 +42,7 @@ class GameModel {
         /*
             Selecciono información de TODAS las columnas de la tabla 'games', para luego dividir
             dicha información individualmente dependiendo del nombre de columna
-            que se asigne mediante la url de Postman.
+            que se asigne mediante el parametro sort en la url de Postman.
         */ 
         $sentencia = $this->db->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = ? AND TABLE_NAME = 'games'");
         $sentencia->execute(array($sort));
@@ -86,5 +86,12 @@ class GameModel {
         $object = $query->fetchAll(PDO::FETCH_OBJ);
 
         return $object; 
+    }
+
+    public function getPagination($start, $products){
+        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $query = $this->db->prepare("SELECT id_juego, juego_name, sinopsis, calificacion, id_brand FROM games LIMIT ?, ?");
+        $query->execute([$start, $products]);
+        return $query->fetchAll(PDO::FETCH_OBJ);
     }
 }
