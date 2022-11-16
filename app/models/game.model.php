@@ -16,7 +16,9 @@ class GameModel {
         // Conexion con db ya abierta por el constructor de la clase
 
             
-        /*Orden ASCENDENTE y DESCENDENTE por una columna de la tabla games*/
+        /*
+        * Orden ASCENDENTE y DESCENDENTE por una columna de la tabla games.
+        */
         if(!empty($sort) && !empty($order)){
             $query = $this->db->prepare("SELECT * FROM games ORDER BY $sort $order");
         }else if(!empty($sort)){
@@ -47,11 +49,13 @@ class GameModel {
         $sentencia = $this->db->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = ? AND TABLE_NAME = 'games'");
         $sentencia->execute(array($sort));
         $columna = $sentencia->fetchAll(PDO::FETCH_OBJ);
-        //Devuelvo todo el conjunto de información de dicha columna mediante un array
+        //Devuelvo todo el conjunto de información de dicha columna mediante un array.
         return count($columna);
     }
 
-    //Selecciona y muestra un juego por su ID de la base de datos
+    /*
+    *   Selecciona y muestra un juego por su ID de la base de datos.
+    */
     public function get($id){
         $query = $this->db->prepare("SELECT * FROM games WHERE id_juego = ?");
         $query->execute([$id]);
@@ -60,13 +64,17 @@ class GameModel {
         return $game;
     }
 
-    //Elimina un juego por su ID de la base de datos
+    /*
+    *   Elimina un juego por su ID de la base de datos.
+    */
     public function delete($id){
         $query = $this->db->prepare("DELETE FROM games WHERE id_juego = ?");
         $query->execute([$id]);
     }
 
-    //Inserta un juego en la base de datos
+    /*
+    *   Inserta un juego en la base de datos.
+    */
     public function insert($title, $sinopsis, $qualification, $id){
         $query = $this->db->prepare("INSERT INTO games (juego_name, sinopsis, calificacion, id_brand) VALUES (?, ?, ?, ?)");
         $query->execute(array($title, $sinopsis, $qualification, $id));
@@ -74,11 +82,15 @@ class GameModel {
         return $this->db->lastInsertId();
     }
 
-    function filter($tabla, $name, $order) {
-        if($order != null){
+    /*
+    *   Funcion de filtrado.
+    */
+    function filter($tabla = null, $name = null, $order = null) {
+        if($order != null && $tabla != null){
             $query = $this->db->prepare("SELECT games.id_juego, games.juego_name, games.sinopsis, games.calificacion, games.id_brand, brands.brand_name 
         FROM games JOIN brands ON games.id_brand = brands.id_brand WHERE $tabla LIKE ? ORDER BY id_juego $order");
-        }else{
+        }
+        else if($tabla != null && $name != null){
             $query = $this->db->prepare("SELECT games.id_juego, games.juego_name, games.sinopsis, games.calificacion, games.id_brand, brands.brand_name 
             FROM games JOIN brands ON games.id_brand = brands.id_brand WHERE $tabla LIKE ?");
         }
@@ -88,6 +100,9 @@ class GameModel {
         return $object; 
     }
 
+    /*
+    *   Funcion de paginacion.
+    */
     public function getPagination($start, $products){
         $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $query = $this->db->prepare("SELECT id_juego, juego_name, sinopsis, calificacion, id_brand FROM games LIMIT ?, ?");
