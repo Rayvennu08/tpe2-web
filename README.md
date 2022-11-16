@@ -5,7 +5,10 @@
 
 ### **Development Server** :spiral_notepad:	
 Para correr este servidor de motor MVC se necesitan intalar dos programas:
-*Xampp* (**https://www.apachefriends.org/es/download.html**) para poder correr la base de datos (*MySQL*) y levantar el servidor (*Apache*). Junto al programa *Postman* (**https://www.postman.com/downloads/**) 
+
+*Xampp* (**https://www.apachefriends.org/es/download.html**) para poder correr la base de datos (*MySQL*) y levantar el servidor (*Apache*). 
+
+Junto al programa *Postman* (**https://www.postman.com/downloads/**) 
 para poder probar e interactuar con la API de este trabajo.
 
 
@@ -19,7 +22,7 @@ Luego, deberá abrir su navegador de preferencia y escribir lo siguiente en su b
 
 
 En dicha url creará una nueva base de datos llamada *'listajuegos'*, una vez creada deberá importar el archivo ***listajuegos.sql*** que se encuentra
-en el repositorio; de esta manera obtendrá los datos necesarios para disponer del contenido del proyecto e interactuar con éste mediante *Postman*.
+en el repositorio, o copiar y pegar toda el codigo SQL que se encuentra en la carpeta *database* dentro del proyecto; de esta manera obtendrá los datos necesarios para disponer del contenido del proyecto e interactuar con éste mediante *Postman*.
 
 
 Una vez realizados los pasos anteriores deberá ejecutar el programa *Postman* y seguir las siguientes instrucciones.
@@ -43,7 +46,7 @@ Trae todos los juegos existentes sin filtro alguno
 
 1.2 Ejemplo *sort*: `http://localhost/tpe2-web/api/games?sort=sinopsis`
 
- ***A CONTINUACION SE DEJA UN CUADRO PARA DIFERENCIAR, Y RECONOCER, LOS PARAMETROS DE CATEGORIA brands DIVIDIDOS POR id_brand, CADA NUMERO HACE REFERENCIA A UN NOMBRE DE EMPRESA:***
+ ***A CONTINUACION SE DEJA UN CUADRO PARA DIFERENCIAR, Y RECONOCER, LOS PARAMETROS DE CATEGORIA brands DIVIDIDOS POR id_brand, CADA NUMERO (id) HACE REFERENCIA A UN NOMBRE DE EMPRESA:***
 
 ```
          id_brand         brand_name
@@ -71,7 +74,9 @@ en forma descendente o ascendente (ASC o asc / DESC o desc) segun del elemento m
 
 5. Ejemplo de unión de los 3 parametros ***sort***, ***order*** y ***filtro***: `http://localhost/tpe2-web/api/games?sort=juego_name&filtro=call&order=asc` Esto traerá los juegos que en su *nombre* (juego_name) contengan la palabra "call" (filtro) en forma ascendente (order).
 
-6. Ejemplo: `http://localhost/tpe2-web/api/game/1` 
+6. Ejemplo ***paginación***: `http://localhost/tpe2-web/api/games?start=16&products=5` el parametro *start* representa la pagina que se busque mostrar y el parametro *products* representa la cantidad de juegos, en este caso, que se deseen mostrar.
+
+7. Ejemplo: `http://localhost/tpe2-web/api/game/1` 
 
 Busca un juego por su ID.
 
@@ -96,6 +101,7 @@ Para agregar el juego que desee, debe dirigirse al apartado de *Body* en la secc
     "juego_name": "Bla bla",
     "sinopsis": "uno dos tres cuatro cinco seis",
     "calificacion": 9,
-    "id_brand": "Electronic Arts" (Debe ser una empresa existente en la base de datos)
+    "id_brand": "Electronic Arts"
+    (Debe ser una empresa existente en la base de datos, de no ser así el programa notificará un error).
 }
 ```
